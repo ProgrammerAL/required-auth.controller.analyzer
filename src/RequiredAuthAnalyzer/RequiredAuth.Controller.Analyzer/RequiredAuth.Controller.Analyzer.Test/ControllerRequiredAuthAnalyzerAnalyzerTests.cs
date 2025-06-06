@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using ProgrammerAL.Analyzers.RequiredAuthAnalyzer;
+using ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer;
 
 namespace RequiredAuthAnalyzer.Test;
 

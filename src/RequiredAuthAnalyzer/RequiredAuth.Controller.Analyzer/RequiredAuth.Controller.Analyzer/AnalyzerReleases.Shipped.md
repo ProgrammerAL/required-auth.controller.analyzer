@@ -7,5 +7,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-PAL2000  | Security | Warning | PAL2000_MinimalApiRequiredAuthAnalyzer, [Documentation](PAL2000_Documentation_Link)
-PAL2001  | Security | Warning | PAL2001_ControllerRequiredAuthAnalyzer, [Documentation](PAL2001_Documentation_Link)
+PAL3000  | Security | Warning | PAL3000_ControllerRequiredAuthAnalyzer, [Documentation](PAL3000_Documentation_Link)

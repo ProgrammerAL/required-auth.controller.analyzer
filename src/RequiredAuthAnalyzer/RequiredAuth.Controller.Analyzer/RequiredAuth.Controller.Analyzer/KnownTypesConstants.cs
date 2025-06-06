@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ProgrammerAL.Analyzers.RequiredAuthAnalyzer;
+namespace ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer;
 
 public static class KnownTypesConstants
 {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProgrammerAL.Analyzers.RequiredAuthAnalyzer {
+namespace ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ProgrammerAL.Analyzers.RequiredAuthAnalyzer {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ProgrammerAL.Analyzers.RequiredAuthAnalyzer.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

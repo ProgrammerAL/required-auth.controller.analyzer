@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace ProgrammerAL.Analyzers.RequiredAuthAnalyzer;
+namespace ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
@@ -14,7 +14,7 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
     private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.ControllerRequiredAuthAnalyzerDescription), Resources.ResourceManager, typeof(Resources));
 
     public const string Category = "Security";
-    public const string DiagnosticId = "PAL2001";
+    public const string DiagnosticId = "PAL3000";
     public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);

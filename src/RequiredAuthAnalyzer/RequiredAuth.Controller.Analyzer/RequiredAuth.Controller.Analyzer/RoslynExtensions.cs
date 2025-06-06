@@ -4,7 +4,7 @@ using System.Text;
 
 using Microsoft.CodeAnalysis;
 
-namespace ProgrammerAL.Analyzers.RequiredAuthAnalyzer;
+namespace ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer;
 
 public static class RoslynExtensions
 {
