@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Linq;
 
 using Microsoft.CodeAnalysis;
@@ -24,60 +25,84 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.Method);
+        context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
     }
 
     private static void AnalyzeSymbol(SymbolAnalysisContext context)
     {
-        var methodSymbol = (IMethodSymbol)context.Symbol;
-        if (IsEndpointForTraditionalController(methodSymbol, context))
+        var namedTypeSymbol = context.Symbol as INamedTypeSymbol;
+        if (namedTypeSymbol is null)
         {
-            AnalyzeTraditionalControllerEndpoint(methodSymbol, context);
+            return;
+        }
+
+        var attributes = namedTypeSymbol.GetAttributes();
+
+        if (IsControllerClass(attributes, context))
+        {
+            AnalyzeTraditionalControllerEndpoint(namedTypeSymbol, attributes, context);
         }
     }
 
-    private static bool IsEndpointForTraditionalController(IMethodSymbol methodSymbol, SymbolAnalysisContext context)
+    private static bool IsControllerClass(ImmutableArray<AttributeData> symbolAttributes, SymbolAnalysisContext context)
     {
-        var parentClass = methodSymbol.ContainingType;
-
-        var isParentApiController = parentClass
-                .GetAttributes()
+        var isController = symbolAttributes
                 .Any(x => x.AttributeClass?.ToString() == KnownTypesConstants.ApiControllerAttribute);
 
-        if (!isParentApiController)
-        {
-            return false;
-        }
-
-        var isMethodAnEndpoint = methodSymbol.DeclaredAccessibility == Accessibility.Public
-            && methodSymbol.IsStatic == false
-            && methodSymbol.MethodKind == MethodKind.Ordinary;
-
-        return isMethodAnEndpoint;
+        return isController;
     }
 
-    private static void AnalyzeTraditionalControllerEndpoint(IMethodSymbol methodSymbol, SymbolAnalysisContext context)
+    private static void AnalyzeTraditionalControllerEndpoint(INamedTypeSymbol symbol, ImmutableArray<AttributeData> symbolAttributes, SymbolAnalysisContext context)
     {
         //The symantec type is the attribute class's constructor
         //  So use the ContainingType to get the full class name
-        var authAttributeSymbol = context.Compilation.GetTypeByMetadataName(KnownTypesConstants.AuthorizeAttribute) 
+        var authAttributeSymbol = context.Compilation.GetTypeByMetadataName(KnownTypesConstants.AuthorizeAttribute)
                                     ?? throw new System.Exception($"Could not load C# syntax data for attribute {KnownTypesConstants.AuthorizeAttribute}");
-        var anonymousAuthAttributeSymbol = context.Compilation.GetTypeByMetadataName(KnownTypesConstants.AllowAnonymousAttribute) 
+        var anonymousAuthAttributeSymbol = context.Compilation.GetTypeByMetadataName(KnownTypesConstants.AllowAnonymousAttribute)
                                     ?? throw new System.Exception($"Could not load C# syntax data for attribute {KnownTypesConstants.AllowAnonymousAttribute}");
-        
-        var hasAuthAttribute = methodSymbol.GetAttributes()
-            .Any(x =>
-            {
-                return x.AttributeClass is object
-                    && (x.AttributeClass.IsOrInheritFrom(authAttributeSymbol)
-                        || x.AttributeClass.IsOrInheritFrom(anonymousAuthAttributeSymbol));
-            });
+
+        ImmutableArray<INamedTypeSymbol> knownAuthAttributes = [authAttributeSymbol, anonymousAuthAttributeSymbol];
+
+        var classHasAuthAttribute = ContainsAuthAttribute(symbolAttributes, knownAuthAttributes);
+        var publicMethods = LoadPublicMethods(symbol);
+
+        Analyze(symbol, classHasAuthAttribute, publicMethods);
+    }
+
+    private static void Analyze(INamedTypeSymbol symbol, bool classHasAuthAttribute, ImmutableArray<IMethodSymbol> publicMethods)
+    {
+
 
         if (!hasAuthAttribute)
         {
-            var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodSymbol.Name);
+            var diagnostic = Diagnostic.Create(Rule, symbol.Locations[0], symbol.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }
 
+    private static ImmutableArray<IMethodSymbol> LoadPublicMethods(INamedTypeSymbol symbol)
+    {
+        return symbol.GetMembers()
+            .Where(x => x is IMethodSymbol methodSymbol
+                        && methodSymbol.DeclaredAccessibility == Accessibility.Public
+                        && methodSymbol.IsStatic == false
+                        && methodSymbol.MethodKind == MethodKind.Ordinary)
+            .Select(x => (IMethodSymbol)x)
+            .ToImmutableArray();
+
+    }
+
+    private static bool ContainsAuthAttribute(ImmutableArray<AttributeData> attributes, ImmutableArray<INamedTypeSymbol> authAttributes)
+    {
+        return attributes
+            .Any(x =>
+            {
+                if (x.AttributeClass is not object)
+                {
+                    return false;
+                }
+
+                return authAttributes.Any(authAttribute => x.AttributeClass.IsOrInheritFrom(authAttribute));
+            });
+    }
 }
