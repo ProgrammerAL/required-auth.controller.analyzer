@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RequiredAuth.Controller.Analyzer", "RequiredAuth.Controller.Analyzer\RequiredAuth.Controller.Analyzer\RequiredAuth.Controller.Analyzer.csproj", "{675F0EB1-C31A-4BD4-A745-FB7B29210BAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RequiredAuth.Controller.Analyzer.Package", "RequiredAuth.Controller.Analyzer\RequiredAuth.Controller.Analyzer.Package\RequiredAuth.Controller.Analyzer.Package.csproj", "{C6456343-600E-431C-9921-373DCF6569BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RequiredAuth.Controller.Analyzer.Test", "RequiredAuth.Controller.Analyzer\RequiredAuth.Controller.Analyzer.Test\RequiredAuth.Controller.Analyzer.Test.csproj", "{1967EA3B-1457-4EEF-BD70-FD1866C9B247}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{675F0EB1-C31A-4BD4-A745-FB7B29210BAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675F0EB1-C31A-4BD4-A745-FB7B29210BAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675F0EB1-C31A-4BD4-A745-FB7B29210BAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675F0EB1-C31A-4BD4-A745-FB7B29210BAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6456343-600E-431C-9921-373DCF6569BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6456343-600E-431C-9921-373DCF6569BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6456343-600E-431C-9921-373DCF6569BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6456343-600E-431C-9921-373DCF6569BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1967EA3B-1457-4EEF-BD70-FD1866C9B247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1967EA3B-1457-4EEF-BD70-FD1866C9B247}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1967EA3B-1457-4EEF-BD70-FD1866C9B247}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1967EA3B-1457-4EEF-BD70-FD1866C9B247}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
