@@ -12,9 +12,9 @@
     <PackageId>ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer</PackageId>
     <Version>0.1.0</Version>
     <Authors>ProgrammerAL</Authors>
-    <PackageLicenseUrl>https://github.com/ProgrammerAL/required-auth.analyzer/blob/main/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/ProgrammerAL/required-auth.analyzer</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/ProgrammerAL/required-auth.analyzer</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/ProgrammerAL/required-auth.controller.analyzer/blob/main/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ProgrammerAL/required-auth.controller.analyzer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ProgrammerAL/required-auth.controller.analyzer</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>A Roslyn Analyzer to make sure all endpoints in an ASP.NET project have an attribute to specify what level of authorization is required</Description>
     <Copyright>Copyright</Copyright>
