@@ -11,21 +11,29 @@ namespace ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
 {
-    private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.ControllerRequiredAuthAnalyzerTitle), Resources.ResourceManager, typeof(Resources));
-    private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.ControllerRequiredAuthAnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
-    private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.ControllerRequiredAuthAnalyzerDescription), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString MissingAnyAuthAttributeTitle = new LocalizableResourceString(nameof(Resources.MissingAnyAuthAttributeTitle), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString MissingAnyAuthAttributeMessageFormat = new LocalizableResourceString(nameof(Resources.MissingAnyAuthAttributeMessageFormat), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString MissingAnyAuthAttributeDescription = new LocalizableResourceString(nameof(Resources.MissingAnyAuthAttributeDescription), Resources.ResourceManager, typeof(Resources));
+
+    private static readonly LocalizableString EndpointMissingAuthAttributeTitle = new LocalizableResourceString(nameof(Resources.EndpointMissingAuthAttributeTitle), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString EndpointMissingAuthAttributeMessageFormat = new LocalizableResourceString(nameof(Resources.EndpointMissingAuthAttributeMessageFormat), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString EndpointMissingAuthAttributeDescription = new LocalizableResourceString(nameof(Resources.EndpointMissingAuthAttributeDescription), Resources.ResourceManager, typeof(Resources));
+
+    private static readonly LocalizableString ControllerAndEndpointHaveAuthAttributeTitle = new LocalizableResourceString(nameof(Resources.ControllerAndEndpointHaveAuthAttributeTitle), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString ControllerAndEndpointHaveAuthAttributeMessageFormat = new LocalizableResourceString(nameof(Resources.ControllerAndEndpointHaveAuthAttributeMessageFormat), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString ControllerAndEndpointHaveAuthAttributeDescription = new LocalizableResourceString(nameof(Resources.ControllerAndEndpointHaveAuthAttributeDescription), Resources.ResourceManager, typeof(Resources));
 
     public const string Category = "Security";
     public const string MissingAnyAuthAttributeDiagnosticId = "PAL3000";
-    public static readonly DiagnosticDescriptor MissingAnyAuthAttributeRule = new DiagnosticDescriptor(MissingAnyAuthAttributeDiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+    public static readonly DiagnosticDescriptor MissingAnyAuthAttributeRule = new DiagnosticDescriptor(MissingAnyAuthAttributeDiagnosticId, MissingAnyAuthAttributeTitle, MissingAnyAuthAttributeMessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: MissingAnyAuthAttributeDescription);
 
     public const string EndpointMissingAuthAttributeDiagnosticId = "PAL3001";
-    public static readonly DiagnosticDescriptor EndpointMissingAuthAttributeRule = new DiagnosticDescriptor(EndpointMissingAuthAttributeDiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+    public static readonly DiagnosticDescriptor EndpointMissingAuthAttributeRule = new DiagnosticDescriptor(EndpointMissingAuthAttributeDiagnosticId, EndpointMissingAuthAttributeTitle, EndpointMissingAuthAttributeMessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: EndpointMissingAuthAttributeDescription);
 
     public const string ControllerAndEndpointHaveAuthAttributeDiagnosticId = "PAL3002";
-    public static readonly DiagnosticDescriptor ControllerAndEndpointHaveAuthAttributeRule = new DiagnosticDescriptor(ControllerAndEndpointHaveAuthAttributeDiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+    public static readonly DiagnosticDescriptor ControllerAndEndpointHaveAuthAttributeRule = new DiagnosticDescriptor(ControllerAndEndpointHaveAuthAttributeDiagnosticId, ControllerAndEndpointHaveAuthAttributeTitle, ControllerAndEndpointHaveAuthAttributeMessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: ControllerAndEndpointHaveAuthAttributeDescription);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(MissingAnyAuthAttributeRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [MissingAnyAuthAttributeRule, EndpointMissingAuthAttributeRule, ControllerAndEndpointHaveAuthAttributeRule];
 
     public override void Initialize(AnalysisContext context)
     {
@@ -77,9 +85,9 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
         Analyze(symbol, classHasAuthAttribute, publicMethods, publicMethodsWithAuthAttribute, context);
     }
 
-    private static void Analyze(INamedTypeSymbol symbol, bool classHasAuthAttribute, ImmutableArray<IMethodSymbol> publicMethods, ImmutableArray<IMethodSymbol> publicMethodsWithAuthAttribute, SymbolAnalysisContext context)
+    private static void Analyze(INamedTypeSymbol controllerSymbol, bool classHasAuthAttribute, ImmutableArray<IMethodSymbol> publicMethods, ImmutableArray<IMethodSymbol> publicMethodsWithAuthAttribute, SymbolAnalysisContext context)
     {
-        if (publicMethods.Length < 0)
+        if (publicMethods.Length <= 0)
         {
             //No endpoints, so don't care about the security attributes
             return;
@@ -92,7 +100,7 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
             if (publicMethods.Length == publicMethodsWithoutAuthAttribute.Length)
             {
                 //The class and none of the methods have an auth attribute
-                var diagnostic = Diagnostic.Create(MissingAnyAuthAttributeRule, symbol.Locations[0], symbol.Name);
+                var diagnostic = Diagnostic.Create(MissingAnyAuthAttributeRule, controllerSymbol.Locations[0], controllerSymbol.Name);
                 context.ReportDiagnostic(diagnostic);
             }
             else if (publicMethodsWithoutAuthAttribute.Length > 0)
@@ -101,7 +109,7 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
                 // Show diagnostic for each of those methods saying it needs an auth attribute
                 foreach (var method in publicMethodsWithoutAuthAttribute)
                 {
-                    var diagnostic = Diagnostic.Create(EndpointMissingAuthAttributeRule, method.Locations[0], method.Name);
+                    var diagnostic = Diagnostic.Create(EndpointMissingAuthAttributeRule, method.Locations[0], controllerSymbol.Name, method.Name);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
@@ -112,7 +120,7 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
             // Show diagnostic for each of those methods saying it doesn't need an auth attribute, or to remove attribute from controller
             foreach (var method in publicMethodsWithAuthAttribute)
             {
-                var diagnostic = Diagnostic.Create(ControllerAndEndpointHaveAuthAttributeRule, method.Locations[0], method.Name);
+                var diagnostic = Diagnostic.Create(ControllerAndEndpointHaveAuthAttributeRule, method.Locations[0], controllerSymbol.Name, method.Name);
                 context.ReportDiagnostic(diagnostic);
             }
         }

@@ -19,7 +19,7 @@ public record ProjectPaths(
 {
     public static ProjectPaths LoadFromContext(ICakeContext context, string buildConfiguration, string srcDirectory, string nugetVersion)
     {
-        var projectName = "RequiredAuthAnalyzer";
+        var projectName = "RequiredAuth.Controller.Analyzer";
         var codeRootDirectory =  $"{srcDirectory}/{projectName}";
         var pathToSln = $"{codeRootDirectory}/{projectName}.sln";
         var projectDir = $"{codeRootDirectory}/{projectName}";

@@ -61,56 +61,83 @@ namespace ProgrammerAL.Analyzers.ControllerRequiredAuthAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controller endpoint requires attribute to authenticate the user, or an attribute specifying no anonymous requests are allowed..
+        ///   Looks up a localized string similar to Both controller and endpoint have auth attribute, choose one..
         /// </summary>
-        internal static string ControllerRequiredAuthAnalyzerDescription {
+        internal static string ControllerAndEndpointHaveAuthAttributeDescription {
             get {
-                return ResourceManager.GetString("ControllerRequiredAuthAnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("ControllerAndEndpointHaveAuthAttributeDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controller endpoint &apos;{0}&apos; requires an attribute specifying authentication, or allow anonymous.
+        ///   Looks up a localized string similar to Both controller &apos;{0}&apos; and endpoint &apos;{1}&apos; have auth attribute, choose one.
         /// </summary>
-        internal static string ControllerRequiredAuthAnalyzerMessageFormat {
+        internal static string ControllerAndEndpointHaveAuthAttributeMessageFormat {
             get {
-                return ResourceManager.GetString("ControllerRequiredAuthAnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("ControllerAndEndpointHaveAuthAttributeMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controller endpoint requires authentication attribute.
+        ///   Looks up a localized string similar to Both controller and endpoint have auth attribute.
         /// </summary>
-        internal static string ControllerRequiredAuthAnalyzerTitle {
+        internal static string ControllerAndEndpointHaveAuthAttributeTitle {
             get {
-                return ResourceManager.GetString("ControllerRequiredAuthAnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("ControllerAndEndpointHaveAuthAttributeTitle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimal API endpoint requires attribute to authenticate the user, or an attribute specifying no anonymous requests are allowed..
+        ///   Looks up a localized string similar to The endpoint does not have an auth attribute. it is required because the parent controller also does not have one..
         /// </summary>
-        internal static string MinimalApiRequiredAuthAnalyzerDescription {
+        internal static string EndpointMissingAuthAttributeDescription {
             get {
-                return ResourceManager.GetString("MinimalApiRequiredAuthAnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("EndpointMissingAuthAttributeDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimal API endpoint &apos;{0}&apos; requires an attribute specifying authentication, or allow anonymous.
+        ///   Looks up a localized string similar to The endpoint &apos;{0}&apos; does not have an auth attribute. It is required because the parent controller &apos;{1}&apos; also does not have one..
         /// </summary>
-        internal static string MinimalApiRequiredAuthAnalyzerMessageFormat {
+        internal static string EndpointMissingAuthAttributeMessageFormat {
             get {
-                return ResourceManager.GetString("MinimalApiRequiredAuthAnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("EndpointMissingAuthAttributeMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimal API endpoint requires authentication attribute.
+        ///   Looks up a localized string similar to Endpoint does not have an auth attribute.
         /// </summary>
-        internal static string MinimalApiRequiredAuthAnalyzerTitle {
+        internal static string EndpointMissingAuthAttributeTitle {
             get {
-                return ResourceManager.GetString("MinimalApiRequiredAuthAnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("EndpointMissingAuthAttributeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controller requires authentication attribute on itself or all endpoints..
+        /// </summary>
+        internal static string MissingAnyAuthAttributeDescription {
+            get {
+                return ResourceManager.GetString("MissingAnyAuthAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controller &apos;{0}&apos; requires an auth attribute or an attribute on all of its endpoints.
+        /// </summary>
+        internal static string MissingAnyAuthAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingAnyAuthAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controller does not have any auth attributes on the controller or endpoints.
+        /// </summary>
+        internal static string MissingAnyAuthAttributeTitle {
+            get {
+                return ResourceManager.GetString("MissingAnyAuthAttributeTitle", resourceCulture);
             }
         }
     }

@@ -117,28 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ControllerRequiredAuthAnalyzerDescription" xml:space="preserve">
-    <value>Controller endpoint requires attribute to authenticate the user, or an attribute specifying no anonymous requests are allowed.</value>
-    <comment>An optional longer localizable description of the diagnostic.</comment>
+  <data name="ControllerAndEndpointHaveAuthAttributeDescription" xml:space="preserve">
+    <value>Both controller and endpoint have auth attribute, choose one.</value>
   </data>
-  <data name="ControllerRequiredAuthAnalyzerMessageFormat" xml:space="preserve">
-    <value>Controller endpoint '{0}' requires an attribute specifying authentication, or allow anonymous</value>
-    <comment>The format-able message the diagnostic displays.</comment>
+  <data name="ControllerAndEndpointHaveAuthAttributeMessageFormat" xml:space="preserve">
+    <value>Both controller '{0}' and endpoint '{1}' have auth attribute, choose one</value>
   </data>
-  <data name="ControllerRequiredAuthAnalyzerTitle" xml:space="preserve">
-    <value>Controller endpoint requires authentication attribute</value>
-    <comment>The title of the diagnostic.</comment>
+  <data name="ControllerAndEndpointHaveAuthAttributeTitle" xml:space="preserve">
+    <value>Both controller and endpoint have auth attribute</value>
   </data>
-  <data name="MinimalApiRequiredAuthAnalyzerDescription" xml:space="preserve">
-    <value>Minimal API endpoint requires attribute to authenticate the user, or an attribute specifying no anonymous requests are allowed.</value>
-    <comment>An optional longer localizable description of the diagnostic.</comment>
+  <data name="EndpointMissingAuthAttributeDescription" xml:space="preserve">
+    <value>The endpoint does not have an auth attribute. it is required because the parent controller also does not have one.</value>
   </data>
-  <data name="MinimalApiRequiredAuthAnalyzerMessageFormat" xml:space="preserve">
-    <value>Minimal API endpoint '{0}' requires an attribute specifying authentication, or allow anonymous</value>
-    <comment>The format-able message the diagnostic displays.</comment>
+  <data name="EndpointMissingAuthAttributeMessageFormat" xml:space="preserve">
+    <value>The endpoint '{0}' does not have an auth attribute. It is required because the parent controller '{1}' also does not have one.</value>
   </data>
-  <data name="MinimalApiRequiredAuthAnalyzerTitle" xml:space="preserve">
-    <value>Minimal API endpoint requires authentication attribute</value>
-    <comment>The title of the diagnostic.</comment>
+  <data name="EndpointMissingAuthAttributeTitle" xml:space="preserve">
+    <value>Endpoint does not have an auth attribute</value>
+  </data>
+  <data name="MissingAnyAuthAttributeDescription" xml:space="preserve">
+    <value>Controller requires authentication attribute on itself or all endpoints.</value>
+  </data>
+  <data name="MissingAnyAuthAttributeMessageFormat" xml:space="preserve">
+    <value>Controller '{0}' requires an auth attribute or an attribute on all of its endpoints</value>
+  </data>
+  <data name="MissingAnyAuthAttributeTitle" xml:space="preserve">
+    <value>Controller does not have any auth attributes on the controller or endpoints</value>
   </data>
 </root>
