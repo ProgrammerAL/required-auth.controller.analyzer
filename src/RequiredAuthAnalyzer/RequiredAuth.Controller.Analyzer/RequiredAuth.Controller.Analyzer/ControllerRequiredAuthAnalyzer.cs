@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Xml.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -15,10 +16,16 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
     private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.ControllerRequiredAuthAnalyzerDescription), Resources.ResourceManager, typeof(Resources));
 
     public const string Category = "Security";
-    public const string DiagnosticId = "PAL3000";
-    public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+    public const string MissingAnyAuthAttributeDiagnosticId = "PAL3000";
+    public static readonly DiagnosticDescriptor MissingAnyAuthAttributeRule = new DiagnosticDescriptor(MissingAnyAuthAttributeDiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+    public const string EndpointMissingAuthAttributeDiagnosticId = "PAL3001";
+    public static readonly DiagnosticDescriptor EndpointMissingAuthAttributeRule = new DiagnosticDescriptor(EndpointMissingAuthAttributeDiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+
+    public const string ControllerAndEndpointHaveAuthAttributeDiagnosticId = "PAL3002";
+    public static readonly DiagnosticDescriptor ControllerAndEndpointHaveAuthAttributeRule = new DiagnosticDescriptor(ControllerAndEndpointHaveAuthAttributeDiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(MissingAnyAuthAttributeRule);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -65,18 +72,49 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
 
         var classHasAuthAttribute = ContainsAuthAttribute(symbolAttributes, knownAuthAttributes);
         var publicMethods = LoadPublicMethods(symbol);
+        var publicMethodsWithAuthAttribute = LoadPublicMethodsWithAuthAttribute(publicMethods, knownAuthAttributes);
 
-        Analyze(symbol, classHasAuthAttribute, publicMethods);
+        Analyze(symbol, classHasAuthAttribute, publicMethods, publicMethodsWithAuthAttribute, context);
     }
 
-    private static void Analyze(INamedTypeSymbol symbol, bool classHasAuthAttribute, ImmutableArray<IMethodSymbol> publicMethods)
+    private static void Analyze(INamedTypeSymbol symbol, bool classHasAuthAttribute, ImmutableArray<IMethodSymbol> publicMethods, ImmutableArray<IMethodSymbol> publicMethodsWithAuthAttribute, SymbolAnalysisContext context)
     {
-
-
-        if (!hasAuthAttribute)
+        if (publicMethods.Length < 0)
         {
-            var diagnostic = Diagnostic.Create(Rule, symbol.Locations[0], symbol.Name);
-            context.ReportDiagnostic(diagnostic);
+            //No endpoints, so don't care about the security attributes
+            return;
+        }
+
+        var publicMethodsWithoutAuthAttribute = publicMethods.Where(x => !publicMethodsWithAuthAttribute.Contains(x)).ToImmutableArray();
+
+        if (!classHasAuthAttribute)
+        {
+            if (publicMethods.Length == publicMethodsWithoutAuthAttribute.Length)
+            {
+                //The class and none of the methods have an auth attribute
+                var diagnostic = Diagnostic.Create(MissingAnyAuthAttributeRule, symbol.Locations[0], symbol.Name);
+                context.ReportDiagnostic(diagnostic);
+            }
+            else if (publicMethodsWithoutAuthAttribute.Length > 0)
+            {
+                //Class doesn't have an auth attribute and some public methods don't have an auth method
+                // Show diagnostic for each of those methods saying it needs an auth attribute
+                foreach (var method in publicMethodsWithoutAuthAttribute)
+                {
+                    var diagnostic = Diagnostic.Create(EndpointMissingAuthAttributeRule, method.Locations[0], method.Name);
+                    context.ReportDiagnostic(diagnostic);
+                }
+            }
+        }
+        else if (publicMethodsWithAuthAttribute.Length > 0)
+        {
+            //Class has an auth attribute and some public methods also have one
+            // Show diagnostic for each of those methods saying it doesn't need an auth attribute, or to remove attribute from controller
+            foreach (var method in publicMethodsWithAuthAttribute)
+            {
+                var diagnostic = Diagnostic.Create(ControllerAndEndpointHaveAuthAttributeRule, method.Locations[0], method.Name);
+                context.ReportDiagnostic(diagnostic);
+            }
         }
     }
 
@@ -104,5 +142,15 @@ public class ControllerRequiredAuthAnalyzer : DiagnosticAnalyzer
 
                 return authAttributes.Any(authAttribute => x.AttributeClass.IsOrInheritFrom(authAttribute));
             });
+    }
+
+    private static ImmutableArray<IMethodSymbol> LoadPublicMethodsWithAuthAttribute(ImmutableArray<IMethodSymbol> publicMethods, ImmutableArray<INamedTypeSymbol> knownAuthAttributes)
+    {
+        return publicMethods.Where(method =>
+            {
+                var attributes = method.GetAttributes();
+                return ContainsAuthAttribute(attributes, knownAuthAttributes);
+            }
+        ).ToImmutableArray();
     }
 }

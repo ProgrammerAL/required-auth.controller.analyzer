@@ -11,7 +11,7 @@ namespace RequiredAuthAnalyzer.Test;
 public class ControllerRequiredAuthAnalyzerAnalyzerTests
 {
     private static readonly DiagnosticAnalyzer Analyzer = new ControllerRequiredAuthAnalyzer();
-    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(ControllerRequiredAuthAnalyzer.Rule);
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(ControllerRequiredAuthAnalyzer.MissingAnyAuthAttributeRule);
 
     //No diagnostics expected to show up
     [TestMethod]
