@@ -24,3 +24,7 @@ https://www.nuget.org/packages/ProgrammerAL.Analyzers.ControllerRequiredAuthAnal
 - PAL3002
   - Both the Controller and one or more endpoints have an auth attribute. Modify the code so the attributes are over the Controller OR the individual endpoints.
 
+
+## Can we be strict?
+
+If you would instead like to force all endpoints to have an Auth attribute and not have any at the controller level, there is another Roslyn Analyzer hosted at: https://github.com/ProgrammerAL/required-auth.analyzer
